@@ -1,0 +1,84 @@
+# Sample Lean package with devShell integration
+
+## Memento
+
+Show:
+
+```bash
+nix flake show . --show-trace --all-systems
+```
+
+Expected output:
+
+```output
+git+file:///Users/silvia/projects/lean-shell/another-lean-shell?ref=refs/heads/main&rev=876f8a92516f7f6e8b6bca99be9000c8ac3b0e5b
+├───apps
+│   ├───aarch64-darwin
+│   │   ├───default: app
+│   │   └───lean: app
+│   ├───aarch64-linux
+│   │   ├───default: app
+│   │   └───lean: app
+│   ├───x86_64-darwin
+│   │   ├───default: app
+│   │   └───lean: app
+│   └───x86_64-linux
+│       ├───default: app
+│       └───lean: app
+├───devShells
+│   ├───aarch64-darwin
+│   │   └───default: development environment 'devenv-shell'
+│   ├───aarch64-linux
+│   │   └───default: development environment 'devenv-shell'
+│   ├───x86_64-darwin
+│   │   └───default: development environment 'devenv-shell'
+│   └───x86_64-linux
+│       └───default: development environment 'devenv-shell'
+└───packages
+    ├───aarch64-darwin
+    │   └───lean: package 'lean'
+    ├───aarch64-linux
+    │   └───lean: package 'lean'
+    ├───x86_64-darwin
+    │   └───lean: package 'lean'
+    └───x86_64-linux
+        └───lean: package 'lean'
+```
+
+Archive:
+
+```bash
+nix flake archive --json \
+  | jq -r '.path,(.inputs|to_entries[].value.path)'
+```
+
+Expected output:
+
+```output
+/nix/store/j0kdj8mvqrpi8r0gpmzqmddrh359i8m6-source
+/nix/store/y9m0i9f9nk27kgiwwm0nnc72bzr1p55j-source
+/nix/store/hwsdv71bmaqvzbii5viryxc8slw4vr5v-source
+/nix/store/8gwkqdghf9pb7vwzsgfbpzydqq1iiirz-source
+/nix/store/7cgm1w1ig4a8zvdmhzykfdyaa9xynvbm-source
+```
+
+Push to cachix:
+
+```bash
+nix flake archive --json \
+  | jq -r '.path,(.inputs|to_entries[].value.path)' \
+  | cachix push tarc
+```
+
+Expected output:
+
+```output
+compressing and pushing /nix/store/j0kdj8mvqrpi8r0gpmzqmddrh359i8m6-source (12.31 KiB)
+All done.
+```
+
+## Usage
+
+```bash
+nix develop --impure
+```

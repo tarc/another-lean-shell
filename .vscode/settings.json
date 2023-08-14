@@ -1,0 +1,4 @@
+{
+    "lean4.serverLogging.path": "./log",
+    "lean4.serverLogging.enabled": true
+}
